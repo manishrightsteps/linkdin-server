@@ -57,7 +57,16 @@ mongoose.connect(process.env.MONGODB_URI)
 app.get('/api/applicants', async (req, res) => {
   try {
     const applicants = await Applicant.find({}).lean();
-    res.json(applicants);
+    
+    // Filter out broken comments - only return comments with all required fields
+    const cleanedApplicants = applicants.map(applicant => ({
+      ...applicant,
+      comments: (applicant.comments || []).filter(comment => 
+        comment.id && comment.person && comment.decision && comment.timestamp
+      )
+    }));
+    
+    res.json(cleanedApplicants);
   } catch (error) {
     console.error('Error fetching applicants:', error);
     res.status(500).json({ error: 'Failed to fetch applicants' });
