@@ -24,9 +24,11 @@ app.use('/applications', express.static(path.join(__dirname, 'applications')));
 
 // Mongoose Schema
 const commentSchema = new mongoose.Schema({
+  id: Number,
   person: String,
-  text: String,
-  date: String
+  decision: String,
+  note: String,
+  timestamp: String
 }, { _id: false });
 
 const applicantSchema = new mongoose.Schema({
